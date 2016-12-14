@@ -35,6 +35,7 @@
 # The fact that you are presently reading this means that you have had
 # knowledge of the CeCILL license and that you accept its terms.
 #
+from __future__ import print_function
 from sphinx.directives import Directive
 from docutils.parsers.rst.directives import unchanged
 from docutils import nodes
@@ -44,7 +45,6 @@ from glob import glob
 from numpy.f2py.crackfortran import crackfortran, fortrantypes
 import re, os, sys
 from fortran_domain import FortranDomain
-
 
 # Fortran parser and formatter
 # ----------------------------
@@ -678,7 +678,7 @@ class F90toRst(object):
 
         :Example:
 
-            >>> print o.format_title('My title', '-')
+            >>> print( o.format_title('My title', '-') )
             My title
             --------
         """
@@ -694,7 +694,7 @@ class F90toRst(object):
 
         :Example:
 
-            >>> print o.format_rubric('My title', '-')
+            >>> print( o.format_rubric('My title', '-') )
             .. rubric:: My rubric
         """
         return self.format_lines('.. rubric:: '+text, indent=indent)+'\n'
@@ -710,7 +710,7 @@ class F90toRst(object):
 
         :Example:
 
-        >>> print format_declaration('var', 'myvar', 'my description', indent=1, bullet='-')
+        >>> print( format_declaration('var', 'myvar', 'my description', indent=1, bullet='-') )
             - .. f:var:: myvar
 
                 my description
@@ -736,7 +736,7 @@ class F90toRst(object):
 
         :Example:
 
-        >>> print obj.format_type('myfunc')
+        >>> print( obj.format_type('myfunc') )
         :f:func:`~mymodule.myfunc`
         """
         # Alias?
@@ -1288,7 +1288,7 @@ class FortranAutoModuleDirective(Directive):
         module = self.arguments[0]
         if module not in f90torst.modules:
 #            print dir(self)
-            print 'Wrong fortran module name: '+module
+            print( 'Wrong fortran module name: '+module )
             self.state_machine.reporter.warning('Wrong fortran module name: '+module, line=self.lineno)
 #            self.warn('Wrong fortran module name: '+module)
 
@@ -1357,7 +1357,7 @@ class FortranAutoObjectDirective(Directive):
         if f_sep in objname: objname = objname.split(f_sep)[-1] # remove module name
         objects = getattr(f90torst, self._objtype+'s')
         if objname not in objects:
-            print self._warning%objname
+            print( self._warning%objname )
             self.state_machine.reporter.warning(self._warning%objname, line=self.lineno)
 #            self.warn(self._warning%objname)
 
@@ -1404,7 +1404,7 @@ class FortranAutoProgramDirective(Directive):
     optional_arguments = 0
 
     def run(self):
-        print 'test1'
+        print( 'test1' )
         self.state_machine.reporter.warning('test2', line=self.lineno)
 
         # Get environment
@@ -1414,7 +1414,7 @@ class FortranAutoProgramDirective(Directive):
         # Check routine name
         program = self.arguments[0].lower()
         if program not in f90torst.programs:
-            print 'Wrong program name: '+program
+            print( 'Wrong program name: '+program )
             self.state_machine.reporter.warning('Wrong program name: '+program, line=self.lineno)
 #            self.warning('Wrong program name: '+program)
 
@@ -1452,7 +1452,7 @@ class FortranAutoSrcfileDirective(Directive):
         raw_text = f90torst.format_srcfile(srcfile, search_mode=search_mode, objtype=objtype)
         if not raw_text:
             msg = 'No valid content found for file: '+srcfile
-            print msg
+            print( msg )
             self.state_machine.reporter.warning(msg, line=self.lineno)
 #            self.warning('No valid content found for file: '+srcfile)
 

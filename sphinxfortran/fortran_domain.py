@@ -37,6 +37,12 @@ A fortran domain for sphinx
 #
 
 import re
+from six import iteritems
+
+import sys
+
+if sys.version_info >= (3, 0):
+    unicode = str
 
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
@@ -1009,7 +1015,7 @@ class FortranModuleIndex(Index):
         ignores = self.domain.env.config['modindex_common_prefix']
         ignores = sorted(ignores, key=len, reverse=True)
         # list of all modules, sorted by module name
-        modules = sorted(self.domain.data['modules'].iteritems(),
+        modules = sorted(iteritems(self.domain.data['modules']),
              key=lambda x: x[0].lower())
         # sort out collapsable modules
         prev_modname = ''
@@ -1061,7 +1067,7 @@ class FortranModuleIndex(Index):
         collapse = len(modules) - num_toplevels < num_toplevels
 
         # sort by first letter
-        content = sorted(content.iteritems())
+        content = sorted(iteritems(content))
 
         return content, collapse
 
@@ -1106,10 +1112,10 @@ class FortranDomain(Domain):
     ]
 
     def clear_doc(self, docname):
-        for fullname, (fn, _) in self.data['objects'].items():
+        for fullname, (fn, _) in list(self.data['objects'].items()):
             if fn == docname:
                 del self.data['objects'][fullname]
-        for modname, (fn, _, _, _) in self.data['modules'].items():
+        for modname, (fn, _, _, _) in list(self.data['modules'].items()):
             if fn == docname:
                 del self.data['modules'][modname]
 
@@ -1216,9 +1222,9 @@ class FortranDomain(Domain):
 
 
     def get_objects(self):
-        for modname, info in self.data['modules'].iteritems():
+        for modname, info in iteritems(self.data['modules']):
             yield (modname, modname, 'module', info[0], 'module-' + modname, 0)
-        for refname, (docname, type) in self.data['objects'].iteritems():
+        for refname, (docname, type) in iteritems(self.data['objects']):
             yield (refname, refname, type, docname, refname, 1)
 
 
